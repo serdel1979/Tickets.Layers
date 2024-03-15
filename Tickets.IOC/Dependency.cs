@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Tickets.DAL.DBContext;
+using Tickets.DAL.Repositories.Interfaces;
+using Tickets.DAL.Repositories.Repositories;
 
 namespace Tickets.IOC
 {
@@ -18,6 +20,9 @@ namespace Tickets.IOC
             {
                 options.UseNpgsql(configuration.GetConnectionString("string"));
             });
+
+
+            services.AddScoped<IRepositoryEquipo, RepositoryEquipo>();
         }
     }
 }
