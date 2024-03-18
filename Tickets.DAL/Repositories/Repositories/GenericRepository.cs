@@ -60,6 +60,11 @@ namespace Tickets.DAL.Repositories.Repositories
             return request;
         }
 
+        public async Task<TModel> GetById(int Id)
+        {
+            return await _dbContext.Set<TModel>().FindAsync(Id);
+        }
+
         public async Task<TModel> New(TModel model)
         {
             try

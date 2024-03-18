@@ -29,15 +29,86 @@ namespace Tickets.BLL.Services.Implements
             throw new NotImplementedException();
         }
 
-        public Task<bool> Edit(EquipoDTO modelo)
+        public async Task<bool> Edit(EquipoDTO model)
         {
-            throw new NotImplementedException();
+
+            var existingEquipment = await _genericRepository.GetById(model.Id);
+
+            if (existingEquipment == null)
+            {
+                return false; 
+            }
+            //var query = _genericRepository.GetAll(p => p.Inventario == model.Inventario && p.Id != model.Id);
+            //var equipment = await query.FirstOrDefaultAsync();
+            //if(equipment != null)
+            //{
+            //    return false;
+            //}
+
+            existingEquipment.Nombre = model.Nombre;
+            existingEquipment.UsuarioId = model.UsuarioId;
+            existingEquipment.UrlImagen = model.UrlImagen;
+            existingEquipment.Inventario = model.Inventario;
+            existingEquipment.Serie = model.Serie;
+            existingEquipment.Comentario = model.Comentario;
+
+
+            try
+            {
+                await _genericRepository.Edit(existingEquipment);
+                return true;
+            }
+            catch (DbUpdateException ex)
+            {
+                // Manejar la excepción de actualización de base de datos
+                return false;
+            }
+
         }
 
-        public Task<EquipoDTO> Get(int id)
+        public async Task<EquipoDTO> Get(int id)
         {
-            throw new NotImplementedException();
+            var equipment = await _genericRepository.GetById(id);
+            return _mapper.Map<EquipoDTO>(equipment);
         }
+
+
+
+        public async Task<EquipoDTO> GetByInventory(string numInventory)
+        {
+            try
+            {
+                    var query = _genericRepository.GetAll(p => p.Inventario != null && p.Inventario == numInventory);
+                    var equipment = await query.FirstOrDefaultAsync();
+                    var equipoDTO = _mapper.Map<EquipoDTO>(equipment);
+                    return equipoDTO;
+                
+            }
+            catch (Exception ex)
+            {
+                // No es necesario capturar y reenviar la excepción aquí
+                throw;
+            }
+        }
+
+        public async Task<bool> ExistInventory(string numInventory, int Id)
+        {
+            try
+            {
+                var query = _genericRepository.GetAll(p => p.Inventario == numInventory && p.Id != Id);
+                var equipment = await query.FirstOrDefaultAsync();
+                return equipment != null;
+
+            }
+            catch (Exception ex)
+            {
+                // No es necesario capturar y reenviar la excepción aquí
+                throw;
+            }
+        }
+
+
+
 
         public async Task<List<EquipoDTO>> GetAll(string buscar)
         {

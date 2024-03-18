@@ -12,6 +12,8 @@ namespace Tickets.DAL.Repositories.Interfaces
 
         IQueryable<TModel> GetAll(Expression<Func<TModel, bool>>? filter = null);
 
+        Task<TModel> GetById(int Id);
+
         Task<TModel> New(TModel model);
 
         Task<bool> Edit(TModel model);

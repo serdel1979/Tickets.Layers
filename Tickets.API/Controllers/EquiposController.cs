@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Tickets.BLL.Services.Implements;
 using Tickets.BLL.Services.Interfaces;
 using Tickets.DAL.Repositories.Interfaces;
@@ -24,16 +26,29 @@ namespace Tickets.API.Controllers
         [HttpGet("GetAll/{buscar?}")]
         public async Task<List<EquipoDTO>> GetAll(string buscar = "todos")
         {
-            try
-            {
-                return await _equipoService.GetAll(buscar);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+             return await _equipoService.GetAll(buscar);
         }
 
+        [HttpPut("{Id:int}")]
+      //  [Authorize(Policy = "EsAdmin")]
+        public async Task<ActionResult> Put(EquipoDTO equipoDto, int Id)
+        {
+
+            var equipment = await _equipoService.Get(Id);
+            if (equipment == null)
+            {
+                return NotFound();
+            }
+
+            if (await _equipoService.ExistInventory(equipoDto.Inventario, Id))
+            {
+                return StatusCode(400, $"Ya existe el inventario {equipoDto.Inventario}");
+            }
+
+            await _equipoService.Edit(equipoDto);
+            
+            return NoContent();
+        }
 
 
 
