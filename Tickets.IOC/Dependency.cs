@@ -6,9 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tickets.BLL.Services.Implements;
+using Tickets.BLL.Services.Interfaces;
 using Tickets.DAL.DBContext;
 using Tickets.DAL.Repositories.Interfaces;
 using Tickets.DAL.Repositories.Repositories;
+using Tickets.Utility;
 
 namespace Tickets.IOC
 {
@@ -22,7 +25,11 @@ namespace Tickets.IOC
             });
 
 
-            services.AddScoped<IRepositoryEquipo, RepositoryEquipo>();
+            services.AddAutoMapper(typeof(AutoMapperProfile));
+
+            services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
+            services.AddScoped<IEquipoService, EquipoService>();
         }
     }
 }

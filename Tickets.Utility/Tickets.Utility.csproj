@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Tickets.DTO\Tickets.DTO.csproj" />
     <ProjectReference Include="..\Tickets.Model\Tickets.Model.csproj" />
   </ItemGroup>
