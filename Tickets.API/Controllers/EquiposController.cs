@@ -29,26 +29,31 @@ namespace Tickets.API.Controllers
              return await _equipoService.GetAll(buscar);
         }
 
-        [HttpPut("{Id:int}")]
-      //  [Authorize(Policy = "EsAdmin")]
-        public async Task<ActionResult> Put(EquipoDTO equipoDto, int Id)
+
+
+        [HttpGet("GetByInventory/{Inventory}")]
+        public async Task<EquipoDTO> GetByInventory(string Inventory)
         {
-
-            var equipment = await _equipoService.Get(Id);
-            if (equipment == null)
-            {
-                return NotFound();
-            }
-
-            if (await _equipoService.ExistInventory(equipoDto.Inventario, Id))
-            {
-                return StatusCode(400, $"Ya existe el inventario {equipoDto.Inventario}");
-            }
-
-            await _equipoService.Edit(equipoDto);
-            
-            return NoContent();
+            return await _equipoService.GetByInventory(Inventory);
         }
+
+
+
+
+        [HttpPut("{Id:int}")]
+        public async Task<IActionResult> Put(EquipoDTO equipoDto)
+        {
+            try
+            {
+                var equipoActualizado = await _equipoService.Edit(equipoDto);
+                return Ok(equipoActualizado); // Devuelve 200 OK con el objeto actualizado
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message }); // Devuelve un mensaje de error en formato JSON
+            }
+        }
+
 
 
 

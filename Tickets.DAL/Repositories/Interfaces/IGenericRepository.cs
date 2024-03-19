@@ -16,7 +16,7 @@ namespace Tickets.DAL.Repositories.Interfaces
 
         Task<TModel> New(TModel model);
 
-        Task<bool> Edit(TModel model);
+        Task<TModel> Edit(TModel model);
 
         Task<bool> Delete(TModel model);
 

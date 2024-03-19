@@ -35,14 +35,14 @@ namespace Tickets.DAL.Repositories.Repositories
             }
         }
 
-        public async Task<bool> Edit(TModel model)
+        public async Task<TModel> Edit(TModel model)
         {
             try
             {
 
                 _dbContext.Set<TModel>().Update(model);
                 await _dbContext.SaveChangesAsync();
-                return true;
+                return model;
 
             }
             catch

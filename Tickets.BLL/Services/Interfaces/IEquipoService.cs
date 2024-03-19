@@ -15,12 +15,11 @@ namespace Tickets.BLL.Services.Interfaces
 
         Task<EquipoDTO> New(EquipoDTO model);
 
-        Task<bool> Edit(EquipoDTO modelo);
+        Task<EquipoDTO> Edit(EquipoDTO modelo);
 
 
         Task<EquipoDTO> GetByInventory(string numInventory);
 
-        Task<bool> ExistInventory(string numInventory, int Id);
 
         Task<bool> Delete(int Id);
     }
