@@ -23,18 +23,60 @@ namespace Tickets.API.Controllers
 
 
 
-        [HttpGet("GetAll/{buscar?}")]
-        public async Task<List<EquipoDTO>> GetAll(string buscar = "todos")
+        [HttpGet("GetAll/{find?}")]
+        public async Task<IActionResult> GetAll(string find = "todos")
         {
-             return await _equipoService.GetAll(buscar);
+
+            var response = new ResponseDTO<List<EquipoDTO>>();
+
+            try
+            {
+                response.Result = await _equipoService.GetAll(find);
+                response.IsSuccess = true;
+            }
+            catch (Exception ex) { 
+                
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+
+            }
+            return Ok(response);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> New(EquipoDTO equipment)
+        {
+            var response = new ResponseDTO<EquipoDTO>();
+            try
+            {
+                response.IsSuccess = true;
+                response.Result = await _equipoService.New(equipment);
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = ex.Message;
+            }
+            return Ok(response);
         }
 
 
 
         [HttpGet("GetByInventory/{Inventory}")]
-        public async Task<EquipoDTO> GetByInventory(string Inventory)
+        public async Task<IActionResult> GetByInventory(string Inventory)
         {
-            return await _equipoService.GetByInventory(Inventory);
+            var response = new ResponseDTO<EquipoDTO>();
+            try
+            {
+                response.IsSuccess = true;
+                response.Result = await _equipoService.GetByInventory(Inventory);
+
+            }catch (Exception ex)
+            {
+                response.IsSuccess=false;
+                response.Message = ex.Message;
+            }
+            return Ok(response);
         }
 
 
@@ -43,18 +85,39 @@ namespace Tickets.API.Controllers
         [HttpPut("{Id:int}")]
         public async Task<IActionResult> Put(EquipoDTO equipoDto)
         {
+            var response = new ResponseDTO<EquipoDTO>();
             try
             {
-                var equipoActualizado = await _equipoService.Edit(equipoDto);
-                return Ok(equipoActualizado); // Devuelve 200 OK con el objeto actualizado
+                response.IsSuccess = true;
+                response.Result = await _equipoService.Edit(equipoDto);
+
+ 
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message }); // Devuelve un mensaje de error en formato JSON
+                response.IsSuccess = false;
+                response.Message = ex.Message; 
             }
+            return Ok(response);
         }
 
 
+        [HttpDelete("Delete/{Id:int}")]
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var response = new ResponseDTO<bool>();
+            try
+            {
+                response.IsSuccess = await _equipoService.Delete(Id);
+                response.Result=true;
+            }
+            catch (Exception ex)
+            {
+                response.Result=false;
+                response.Message=ex.Message;
+            }
+            return Ok(response);
+        }
 
 
     }

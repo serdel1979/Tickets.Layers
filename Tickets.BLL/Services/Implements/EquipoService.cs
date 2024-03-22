@@ -24,9 +24,24 @@ namespace Tickets.BLL.Services.Implements
         }
 
 
-        public Task<bool> Delete(int Id)
+        public async Task<bool> Delete(int Id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var existingEquipment = await _genericRepository.GetById(Id);
+
+                if (existingEquipment == null)
+                {
+                    throw new Exception("El equipo no existe.");
+                }
+
+                return await _genericRepository.Delete(existingEquipment);
+
+            }catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
         }
 
         public async Task<EquipoDTO> Edit(EquipoDTO model)
@@ -60,8 +75,8 @@ namespace Tickets.BLL.Services.Implements
             }
             catch (DbUpdateException ex)
             {
-                // Manejar la excepción de actualización de base de datos
-                throw;
+                throw new Exception($"{ex.Message}");
+
             }
 
         }
@@ -87,7 +102,7 @@ namespace Tickets.BLL.Services.Implements
             catch (Exception ex)
             {
                 // No es necesario capturar y reenviar la excepción aquí
-                throw;
+                throw new Exception($"{ex.Message}");
             }
         }
 
@@ -116,16 +131,30 @@ namespace Tickets.BLL.Services.Implements
             }
             catch (Exception ex)
             {
-                // No es necesario capturar y reenviar la excepción aquí
-                throw;
+                throw new Exception($"{ex.Message}");
             }
         }
 
 
 
-        public Task<EquipoDTO> New(EquipoDTO model)
+        public async Task<EquipoDTO> New(EquipoDTO model)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var query = _genericRepository.GetAll(p => p.Inventario != null && p.Inventario == model.Inventario);
+                var equipment = await query.FirstOrDefaultAsync();
+                if(equipment != null)
+                {
+                    throw new Exception($"Ya existe un equipo con inventario {model.Inventario}");
+                }
+                equipment = _mapper.Map<Equipo>(model);
+                var response = await _genericRepository.New(equipment);
+                return _mapper.Map<EquipoDTO>(response);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}");
+            }
         }
     }
 }
